@@ -1,18 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View, ScrollView } from 'react-native';
 import {
   rotulo_input_meta,
   rotulo_btn_cadastro_meta,
   rotulo_lista_metas
 } from './mensagens';
+import { useState } from 'react';
+import MetasList from './components/MetasList';
+import MetaInput from './components/MetaInput';
 
 export default function App() {
+
+  const [metas, setMetas] = useState([]);
+
+  function adicionarMetaHandler(inputMeta) {
+    setMetas([...metas, inputMeta]);
+  }
+  
   return (
-    <View style={styles.mainContanier}>
-      <TextInput placeholder={rotulo_input_meta}/>
-      <Button title={rotulo_btn_cadastro_meta}/>
-      <Text>{rotulo_lista_metas}</Text>
-      <StatusBar style="auto" />
+    <View style={styles.mainContainer}>
+      <MetaInput onAddMeta={adicionarMetaHandler}/>
+      <View style={styles.metaContainer}>
+        <MetasList array={metas}/>
+      </View>
     </View>
   );
 }
@@ -24,8 +34,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mainContanier: {
+  mainContainer: {
     flex: 1,
-    padding: 30
-  }
+    padding: 30,
+    flexDirection: 'column',
+  },
+  metaContainer: {
+    flex: 1,
+  },
 });
