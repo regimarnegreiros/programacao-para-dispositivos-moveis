@@ -14,11 +14,12 @@ import {
   rotulo_btn_cadastro_meta,
   rotulo_lista_metas,
 } from "./mensagens";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MetasList from "./components/MetasList";
 import MetaInput from "./components/MetaInput";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [metas, setMetas] = useState([]);
@@ -29,10 +30,44 @@ export default function App() {
   }
 
   function deletarMetaHandler(id) {
-    console.log(id);
     const novasMetas = metas.filter((meta) => meta.id !== id);
     setMetas(novasMetas);
   }
+
+  useEffect(() => {
+    async function carregarDados() {
+      try {
+        const dadosSalvos = await AsyncStorage.getItem("@listaTarefas");
+        if (dadosSalvos) {
+          setMetas(JSON.parse(dadosSalvos));
+          console.log(
+            "Dados carregados do AsyncStorage:",
+            JSON.parse(dadosSalvos)
+          );
+        }
+      } catch (error) {
+        console.log("Erro ao carregar dados:", error);
+      }
+    }
+
+    carregarDados();
+  }, []);
+
+  useEffect(() => {
+    async function salvarDados() {
+      try {
+        await AsyncStorage.setItem("@listaTarefas", JSON.stringify(metas));
+        console.log(
+          "Dados armazenados no AsyncStorage:",
+          JSON.stringify(metas)
+        );
+      } catch (error) {
+        console.log("Erro ao salvar dados:", error);
+      }
+    }
+
+    salvarDados();
+  }, [metas]);
 
   return (
     <SafeAreaProvider>
