@@ -48,8 +48,8 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="wallet" size={size} color={color} />
             ),
-            tabBarLabel: "Recentes",
-            title: "Despesas Recentes",
+            tabBarLabel: "Todas",
+            title: "Todas as despesas",
             tabBarLabelStyle: { fontSize: 12 },
           }}
         />
