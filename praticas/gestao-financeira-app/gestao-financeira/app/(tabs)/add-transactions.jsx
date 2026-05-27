@@ -10,14 +10,14 @@ import {
   View,
 } from "react-native";
 import { useContext, useMemo, useRef, useState } from "react";
-import { globalStyles } from "../../styles/globalStyles";
-import Button from "../../components/Button";
-import DescriptionInput from "../../components/DescriptionInput";
-import CurrencyInput from "../../components/CurrencyInput";
-import DatePicker from "../../components/DatePicker";
-import CategoryPicker from "../../components/CategoryPicker";
-import { MoneyContext } from "../../contexts/GlobalState";
-import { colors } from "../../constants/colors";
+import { globalStyles } from "@/styles/globalStyles";
+import Button from "@/components/Button";
+import DescriptionInput from "@/components/DescriptionInput";
+import CurrencyInput from "@/components/CurrencyInput";
+import DatePicker from "@/components/DatePicker";
+import CategoryPicker from "@/components/CategoryPicker";
+import { MoneyContext } from "@/contexts/GlobalState";
+import { colors } from "@/constants/colors";
 
 /**
  * Tela "Adicionar Transação".

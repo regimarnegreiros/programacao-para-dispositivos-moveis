@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { globalStyles } from "../styles/globalStyles";
+import { globalStyles } from "@/styles/globalStyles";
 import CategoryItem from "./CategoryItem";
 
 /**

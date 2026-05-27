@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableHighlight } from "react-native";
-import { colors } from "../constants/colors";
+import { colors } from "@/constants/colors";
 
 /**
  * Botão primário do app.

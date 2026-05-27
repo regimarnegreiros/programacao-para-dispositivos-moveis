@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, View } from "react-native";
-import { colors } from "../constants/colors";
+import { colors } from "@/constants/colors";
 
 /**
  * Bolinha colorida que representa visualmente uma categoria.

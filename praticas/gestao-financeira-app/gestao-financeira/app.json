@@ -52,7 +52,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "AQUI VAI O ID DO PROJETO"
+        "projectId": ""
       }
     },
     "owner": "lchijo"

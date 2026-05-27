@@ -1,5 +1,5 @@
 import { Text, TextInput, View } from "react-native"
-import { globalStyles } from "../styles/globalStyles"
+import { globalStyles } from "@/styles/globalStyles"
 
 export default function CurrencyInput({ form, setForm, valueInputRef }) {
   const handleCurrencyChange = (text) => {

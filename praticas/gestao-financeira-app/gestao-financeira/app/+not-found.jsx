@@ -1,6 +1,6 @@
 import { router, Stack } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { colors } from "../constants/colors";
+import { colors } from "@/constants/colors";
 
 /**
  * Tela exibida quando a rota acessada não existe.

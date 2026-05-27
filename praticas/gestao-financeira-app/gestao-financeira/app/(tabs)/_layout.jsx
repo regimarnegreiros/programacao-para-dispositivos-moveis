@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { colors } from "../../constants/colors";
+import { colors } from "@/constants/colors";
 
 export default function TabsLayout() {
   return (
@@ -42,6 +42,15 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="summary"
+        options={{
+          title: "Resumo",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="pie-chart" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="add-transactions"
         options={{
           title: "Adicionar Transação",
@@ -54,15 +63,6 @@ export default function TabsLayout() {
                 color={colors.primaryContrast}
               />
             </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="summary"
-        options={{
-          title: "Resumo",
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="pie-chart" size={28} color={color} />
           ),
         }}
       />

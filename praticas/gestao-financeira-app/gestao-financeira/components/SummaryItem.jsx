@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import CategoryItem from "./CategoryItem";
-import { globalStyles } from "../styles/globalStyles";
+import { globalStyles } from "@/styles/globalStyles";
 
 /**
  * Linha do resumo: bolinha da categoria + nome + total formatado em BRL.

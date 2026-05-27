@@ -1,7 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { StyleSheet, Text, View } from "react-native";
-import { globalStyles } from "../styles/globalStyles";
-import { colors } from "../constants/colors";
+import { globalStyles } from "@/styles/globalStyles";
+import { colors } from "@/constants/colors";
 
 /**
  * Picker de categoria que itera dinamicamente sobre a lista vinda do back-end.

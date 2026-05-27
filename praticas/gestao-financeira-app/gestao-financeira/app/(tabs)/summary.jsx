@@ -6,10 +6,10 @@ import {
   Text,
   View,
 } from "react-native";
-import { MoneyContext } from "../../contexts/GlobalState";
-import SummaryItem from "../../components/SummaryItem";
-import { globalStyles } from "../../styles/globalStyles";
-import { colors } from "../../constants/colors";
+import { MoneyContext } from "@/contexts/GlobalState";
+import SummaryItem from "@/components/SummaryItem";
+import { globalStyles } from "@/styles/globalStyles";
+import { colors } from "@/constants/colors";
 
 /**
  * Tela "Resumo".

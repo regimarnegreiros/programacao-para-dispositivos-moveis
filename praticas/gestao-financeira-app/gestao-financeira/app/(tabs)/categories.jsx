@@ -10,11 +10,11 @@ import {
   View,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { MoneyContext } from "../../contexts/GlobalState";
-import Button from "../../components/Button";
-import CategoryItem from "../../components/CategoryItem";
-import { globalStyles } from "../../styles/globalStyles";
-import { colors } from "../../constants/colors";
+import { MoneyContext } from "@/contexts/GlobalState";
+import Button from "@/components/Button";
+import CategoryItem from "@/components/CategoryItem";
+import { globalStyles } from "@/styles/globalStyles";
+import { colors } from "@/constants/colors";
 
 const PRESET_COLORS = [
   "#DE9AC3",

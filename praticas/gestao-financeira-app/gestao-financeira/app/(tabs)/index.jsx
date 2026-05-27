@@ -9,10 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { MoneyContext } from "../../contexts/GlobalState";
-import TransactionItem from "../../components/TransactionItem";
-import { globalStyles } from "../../styles/globalStyles";
-import { colors } from "../../constants/colors";
+import { MoneyContext } from "@/contexts/GlobalState";
+import TransactionItem from "@/components/TransactionItem";
+import { globalStyles } from "@/styles/globalStyles";
+import { colors } from "@/constants/colors";
 
 /**
  * Tela "Transações".

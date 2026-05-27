@@ -1,5 +1,5 @@
 import { Platform, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { globalStyles } from "../styles/globalStyles"
+import { globalStyles } from "@/styles/globalStyles"
 import { useState } from "react"
 import RNDateTimePicker from "@react-native-community/datetimepicker"
 
