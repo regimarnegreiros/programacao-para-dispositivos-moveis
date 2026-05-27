@@ -4,13 +4,16 @@ import {
   createCategorySchema,
   updateCategorySchema,
 } from "../schemas/categorySchema.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = Router();
+router.use(authMiddleware);
 
 // GET /categories - lista todas as categorias
 router.get("/", async (req, res, next) => {
   try {
     const categories = await prisma.category.findMany({
+      where: { OR: [{ isDefault: true }, { userId: req.userId }] },
       orderBy: { displayName: "asc" },
     });
     res.json(categories);
@@ -21,7 +24,7 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const data = createCategorySchema.parse(req.body);
-    const category = await prisma.category.create({ data });
+    const category = await prisma.category.create({ data: { ...data, userId: req.userId } });
     res.status(201).json(category);
   } catch (e) { next(e); }
 });
@@ -30,6 +33,13 @@ router.post("/", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
   try {
     const data = updateCategorySchema.parse(req.body);
+    const existing = await prisma.category.findUnique({ where: { id: req.params.id } });
+    if (!existing || (existing.userId !== req.userId && !existing.isDefault)) {
+      return res.status(404).json({ error: "Categoria não encontrada" });
+    }
+    if (existing.isDefault) {
+      return res.status(403).json({ error: "Categorias padrão não podem ser alteradas" });
+    }
     const category = await prisma.category.update({
       where: { id: req.params.id },
       data,
@@ -44,7 +54,7 @@ router.delete("/:id", async (req, res, next) => {
     const existing = await prisma.category.findUnique({
       where: { id: req.params.id },
     });
-    if (!existing) return res.status(404).json({ error: "Categoria não encontrada" });
+    if (!existing || (existing.userId !== req.userId && !existing.isDefault)) return res.status(404).json({ error: "Categoria não encontrada" });
     if (existing.isDefault) {
       return res.status(400).json({ error: "Categorias padrão não podem ser excluídas" });
     }

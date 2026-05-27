@@ -6,16 +6,30 @@ datasource db {
   provider = "mysql"
 }
 
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  categories   Category[]
+  transactions Transaction[]
+}
+
 model Category {
   id           String        @id @default(cuid())
-  name         String        @unique
+  name         String
   displayName  String
   icon         String
   background   String
   isIncome     Boolean       @default(false)
   isDefault    Boolean       @default(false)
   createdAt    DateTime      @default(now())
+  userId       String?
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
+
+  @@unique([name, userId])
 }
 
 model Transaction {
@@ -25,6 +39,8 @@ model Transaction {
   date        DateTime
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

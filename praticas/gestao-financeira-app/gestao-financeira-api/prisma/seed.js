@@ -12,9 +12,9 @@ const defaultCategories = [
 async function main() {
   for (const c of defaultCategories) {
     await prisma.category.upsert({
-      where: { name: c.name },
+      where: { id: c.name },
       update: {},
-      create: c,
+      create: { ...c, id: c.name },
     });
   }
   console.log("Seed concluído.");

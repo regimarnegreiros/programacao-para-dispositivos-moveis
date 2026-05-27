@@ -4,13 +4,16 @@ import {
   createTransactionSchema,
   updateTransactionSchema,
 } from "../schemas/transactionSchema.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = Router();
+router.use(authMiddleware);
 
 // GET /transactions - lista todas com a categoria expandida
 router.get("/", async (req, res, next) => {
   try {
     const transactions = await prisma.transaction.findMany({
+      where: { userId: req.userId },
       include: { category: true },
       orderBy: { date: "desc" },
     });
@@ -23,7 +26,7 @@ router.post("/", async (req, res, next) => {
   try {
     const data = createTransactionSchema.parse(req.body);
     const transaction = await prisma.transaction.create({
-      data,
+      data: { ...data, userId: req.userId },
       include: { category: true },
     });
     res.status(201).json(transaction);
@@ -34,6 +37,10 @@ router.post("/", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
   try {
     const data = updateTransactionSchema.parse(req.body);
+    const existing = await prisma.transaction.findUnique({ where: { id: req.params.id } });
+    if (!existing || existing.userId !== req.userId) {
+      return res.status(404).json({ error: "Transação não encontrada" });
+    }
     const transaction = await prisma.transaction.update({
       where: { id: req.params.id },
       data,
@@ -46,6 +53,10 @@ router.put("/:id", async (req, res, next) => {
 // DELETE /transactions/:id
 router.delete("/:id", async (req, res, next) => {
   try {
+    const existing = await prisma.transaction.findUnique({ where: { id: req.params.id } });
+    if (!existing || existing.userId !== req.userId) {
+      return res.status(404).json({ error: "Transação não encontrada" });
+    }
     await prisma.transaction.delete({ where: { id: req.params.id } });
     res.status(204).send();
   } catch (e) { next(e); }
