@@ -1,36 +1,37 @@
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
   View,
+  Dimensions,
 } from "react-native";
+import { PieChart } from "react-native-chart-kit";
 import { MoneyContext } from "@/contexts/GlobalState";
 import SummaryItem from "@/components/SummaryItem";
+import MonthYearPicker from "@/components/MonthYearPicker";
 import { globalStyles } from "@/styles/globalStyles";
 import { colors } from "@/constants/colors";
 
-/**
- * Tela "Resumo".
- *
- * Itera sobre as categorias vindas do servidor (não há mais lista hardcoded)
- * e calcula:
- *  - totais por categoria (somatório dos `value` das transações da categoria);
- *  - saldo final = soma das transações de categorias `isIncome` menos as demais.
- *
- * @returns {JSX.Element}
- */
 export default function Summary() {
   const { transactions, categories, loading } = useContext(MoneyContext);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
-  const { totalsById, balance } = useMemo(() => {
+  const { totalsById, balance, chartData } = useMemo(() => {
     const acc = {};
     let saldo = 0;
+    const pieData = [];
+
+    // Filter transactions by month/year
+    const filtered = transactions.filter(t => {
+      const txDate = new Date(t.date);
+      return txDate.getMonth() === currentDate.getMonth() && txDate.getFullYear() === currentDate.getFullYear();
+    });
 
     for (const c of categories) acc[c.id] = 0;
 
-    for (const t of transactions) {
+    for (const t of filtered) {
       const numericValue = Number(t.value);
       if (acc[t.categoryId] !== undefined) {
         acc[t.categoryId] += numericValue;
@@ -42,8 +43,22 @@ export default function Summary() {
         saldo -= numericValue;
       }
     }
-    return { totalsById: acc, balance: saldo };
-  }, [transactions, categories]);
+
+    // Prepare chart data only for expenses (isIncome = false) with > 0 total
+    categories.forEach(c => {
+      if (!c.isIncome && acc[c.id] > 0) {
+        pieData.push({
+          name: c.displayName,
+          value: acc[c.id],
+          color: c.background,
+          legendFontColor: "#7F7F7F",
+          legendFontSize: 12
+        });
+      }
+    });
+
+    return { totalsById: acc, balance: saldo, chartData: pieData };
+  }, [transactions, categories, currentDate]);
 
   if (loading && categories.length === 0) {
     return (
@@ -58,7 +73,27 @@ export default function Summary() {
 
   return (
     <View style={globalStyles.screenContainer}>
+      <MonthYearPicker date={currentDate} onChange={setCurrentDate} />
       <ScrollView style={globalStyles.content}>
+        
+        {chartData.length > 0 && (
+          <View style={styles.chartContainer}>
+            <Text style={styles.chartTitle}>Despesas do Mês</Text>
+            <PieChart
+              data={chartData}
+              width={Dimensions.get("window").width - 40}
+              height={180}
+              chartConfig={{
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              }}
+              accessor={"value"}
+              backgroundColor={"transparent"}
+              paddingLeft={"0"}
+              absolute
+            />
+          </View>
+        )}
+
         {categories.map((category) => (
           <SummaryItem
             key={category.id}
@@ -82,10 +117,28 @@ export default function Summary() {
 }
 
 const styles = StyleSheet.create({
+  chartContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  chartTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.primaryText,
+    marginBottom: 10,
+  },
   balance: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 40,
   },
   balanceText: {
     fontSize: 18,

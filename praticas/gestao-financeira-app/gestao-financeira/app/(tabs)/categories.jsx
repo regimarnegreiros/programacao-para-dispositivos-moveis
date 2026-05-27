@@ -27,6 +27,12 @@ const PRESET_COLORS = [
   "#F5C26B",
 ];
 
+const PRESET_ICONS = [
+  "label", "work", "fastfood", "home", "book", "airplanemode-active",
+  "local-gas-station", "shopping-cart", "health-and-safety", "pets",
+  "fitness-center", "directions-car", "movie", "computer"
+];
+
 /**
  * Tela "Categorias".
  *
@@ -148,13 +154,20 @@ export default function CategoriesScreen() {
 
             <View>
               <Text style={globalStyles.inputLabel}>Ícone (Material)</Text>
-              <TextInput
-                value={icon}
-                onChangeText={setIcon}
-                placeholder="ex.: favorite, fastfood, work"
-                autoCapitalize="none"
-                style={globalStyles.input}
-              />
+              <View style={styles.iconRow}>
+                {PRESET_ICONS.map((i) => (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => setIcon(i)}
+                    style={[
+                      styles.iconBtn,
+                      icon === i && styles.iconBtnSelected,
+                    ]}
+                  >
+                    <MaterialIcons name={i} size={24} color={icon === i ? colors.primary : colors.secondaryText} />
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
 
             <View>
@@ -239,7 +252,14 @@ const styles = StyleSheet.create({
   colorRow: {
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "space-between",
     gap: 8,
+  },
+  iconRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 6,
   },
   colorDot: {
     width: 32,
@@ -250,6 +270,20 @@ const styles = StyleSheet.create({
   },
   colorDotSelected: {
     borderColor: colors.primaryText,
+  },
+  iconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#eee",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  iconBtnSelected: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primary + "1A", // 10% opacity
   },
   center: {
     flex: 1,

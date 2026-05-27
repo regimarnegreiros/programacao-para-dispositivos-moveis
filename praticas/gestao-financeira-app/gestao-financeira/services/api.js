@@ -20,9 +20,20 @@ const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://10.0.2.2:3000";
  * @returns {Promise<any|null>} Corpo da resposta em JSON, ou null em respostas 204.
  * @throws {Error} Quando a resposta tem status HTTP fora da faixa 2xx.
  */
+let token = null;
+
+export const setAuthToken = (newToken) => {
+  token = newToken;
+};
+
 async function request(path, options = {}) {
+  const headers = { "Content-Type": "application/json" };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${BASE_URL}${path}`, {
-    headers: { "Content-Type": "application/json" },
+    headers,
     ...options,
   });
 
@@ -96,4 +107,16 @@ export const api = {
    */
   deleteTransaction: (id) =>
     request(`/transactions/${id}`, { method: "DELETE" }),
+
+  /**
+   * Login do usuário
+   */
+  login: (data) =>
+    request("/auth/login", { method: "POST", body: JSON.stringify(data) }),
+
+  /**
+   * Registro de usuário
+   */
+  register: (data) =>
+    request("/auth/register", { method: "POST", body: JSON.stringify(data) }),
 };

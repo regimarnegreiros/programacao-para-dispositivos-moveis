@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import { api } from "@/services/api";
+import { api, setAuthToken } from "@/services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const MoneyContext = createContext();
 
@@ -22,6 +23,22 @@ export default function GlobalState({ children }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+
+  // Initialize auth state
+  useEffect(() => {
+    AsyncStorage.getItem("@auth_token").then((token) => {
+      if (token) {
+        setAuthToken(token);
+        AsyncStorage.getItem("@auth_user").then((userData) => {
+          if (userData) setUser(JSON.parse(userData));
+          refresh();
+        });
+      } else {
+        setLoading(false);
+      }
+    });
+  }, []);
 
   /**
    * Recarrega categorias e transações do servidor em paralelo.
@@ -29,6 +46,7 @@ export default function GlobalState({ children }) {
    * @returns {Promise<void>} Resolve quando ambos os GETs terminarem.
    */
   const refresh = useCallback(async () => {
+    if (!user) return; // Wait for user to be loaded or logged in
     setLoading(true);
     setError(null);
     try {
@@ -43,11 +61,13 @@ export default function GlobalState({ children }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    if (user) {
+      refresh();
+    }
+  }, [refresh, user]);
 
   /**
    * Cria uma nova transação no servidor e adiciona-a ao estado local.
@@ -61,15 +81,22 @@ export default function GlobalState({ children }) {
     return created;
   }, []);
 
-  /**
-   * Exclui uma transação no servidor e remove-a do estado local.
-   *
-   * @param {string} id - id (cuid) da transação.
-   * @returns {Promise<void>}
-   */
   const removeTransaction = useCallback(async (id) => {
     await api.deleteTransaction(id);
     setTransactions((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  /**
+   * Atualiza uma transação existente no servidor e no estado local.
+   *
+   * @param {string} id - id (cuid) da transação.
+   * @param {object} data - Dados atualizados da transação.
+   * @returns {Promise<object>} Transação atualizada.
+   */
+  const updateTransaction = useCallback(async (id, data) => {
+    const updated = await api.updateTransaction(id, data);
+    setTransactions((prev) => prev.map((t) => (t.id === id ? updated : t)));
+    return updated;
   }, []);
 
   /**
@@ -98,9 +125,35 @@ export default function GlobalState({ children }) {
     setCategories((prev) => prev.filter((c) => c.id !== id));
   }, []);
 
+  const login = async (email, password) => {
+    const data = await api.login({ email, password });
+    await AsyncStorage.setItem("@auth_token", data.token);
+    await AsyncStorage.setItem("@auth_user", JSON.stringify(data.user));
+    setAuthToken(data.token);
+    setUser(data.user);
+  };
+
+  const register = async (name, email, password) => {
+    const data = await api.register({ name, email, password });
+    await AsyncStorage.setItem("@auth_token", data.token);
+    await AsyncStorage.setItem("@auth_user", JSON.stringify(data.user));
+    setAuthToken(data.token);
+    setUser(data.user);
+  };
+
+  const logout = async () => {
+    await AsyncStorage.removeItem("@auth_token");
+    await AsyncStorage.removeItem("@auth_user");
+    setAuthToken(null);
+    setUser(null);
+    setTransactions([]);
+    setCategories([]);
+  };
+
   return (
     <MoneyContext.Provider
       value={{
+        user,
         transactions,
         categories,
         loading,
@@ -108,8 +161,12 @@ export default function GlobalState({ children }) {
         refresh,
         addTransaction,
         removeTransaction,
+        updateTransaction,
         addCategory,
         removeCategory,
+        login,
+        register,
+        logout,
       }}
     >
       {children}

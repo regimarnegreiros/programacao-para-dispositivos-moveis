@@ -7,10 +7,10 @@ import { colors } from "@/constants/colors";
  * @param {{ children: React.ReactNode, onPress: () => void, disabled?: boolean }} props
  * @returns {JSX.Element}
  */
-export default function Button({ children, onPress, disabled = false }) {
+export default function Button({ children, onPress, disabled = false, style: customStyle }) {
   return (
     <TouchableHighlight
-      style={[style.background, disabled && style.disabled]}
+      style={[style.background, customStyle, disabled && style.disabled]}
       onPress={disabled ? undefined : onPress}
       underlayColor={colors.primary}
     >
