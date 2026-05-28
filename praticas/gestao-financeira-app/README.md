@@ -73,7 +73,7 @@ O projeto atende a todos os requisitos e customizações propostos, garantindo i
    ```bash
    npm install
    ```
-3. (Opcional) Configure o endereço da API caso não vá rodar via localhost. Como padrão ele já tenta acessar `http://localhost:3000`. Você pode criar um arquivo `.env` nesta pasta com a variável `EXPO_PUBLIC_API_URL=http://<SEU_IP>:3000`.
+3. O aplicativo tentará detectar o IP da sua máquina automaticamente em modo de desenvolvimento usando o servidor do Expo. (Opcional) Caso o auto-discovery falhe ou você precise forçar um IP diferente, basta criar um arquivo `.env` nesta pasta com a variável `EXPO_PUBLIC_API_URL=http://<SEU_IP>:3000`.
 4. Inicie o Expo:
    ```bash
    npx expo start --clear

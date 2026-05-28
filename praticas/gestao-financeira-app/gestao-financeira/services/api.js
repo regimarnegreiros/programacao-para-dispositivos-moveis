@@ -1,16 +1,25 @@
+import Constants from "expo-constants";
+import { Platform } from "react-native";
+
 /**
  * URL base da API.
  *
- * - No emulador Android, "localhost" do app aponta para o próprio emulador,
- *   por isso usamos 10.0.2.2 (IP especial que o Android mapeia para o
- *   localhost da máquina hospedeira).
- * - Em device físico, troque para o IP da sua máquina na rede local
- *   (ex.: http://192.168.0.10:3000) — descubra com `ipconfig` no Windows.
- * - Para iOS Simulator, "http://localhost:3000" funciona normalmente.
+ * Em desenvolvimento, o app tenta descobrir o IP da máquina automaticamente
+ * através do servidor do Expo, evitando que você precise atualizar o .env 
+ * a cada vez que o IP mudar.
  *
- * Você pode sobrescrever via variável de ambiente do Expo (EXPO_PUBLIC_API_URL).
+ * Você ainda pode forçar um IP específico usando EXPO_PUBLIC_API_URL no .env
  */
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://10.0.2.2:3000";
+let BASE_URL = "http://10.0.2.2:3000";
+
+if (process.env.EXPO_PUBLIC_API_URL) {
+  BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+} else if (Platform.OS === "web") {
+  BASE_URL = typeof window !== "undefined" ? `http://${window.location.hostname}:3000` : "http://localhost:3000";
+} else if (__DEV__ && Constants.expoConfig?.hostUri) {
+  const ip = Constants.expoConfig.hostUri.split(":")[0];
+  BASE_URL = `http://${ip}:3000`;
+}
 
 /**
  * Função utilitária que executa uma requisição HTTP e padroniza o tratamento de erros.

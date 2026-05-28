@@ -123,10 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.05)",
   },
   chartTitle: {
     fontSize: 16,

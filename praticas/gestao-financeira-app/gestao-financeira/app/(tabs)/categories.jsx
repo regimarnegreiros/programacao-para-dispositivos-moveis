@@ -167,6 +167,9 @@ export default function CategoriesScreen() {
                     <MaterialIcons name={i} size={24} color={icon === i ? colors.primary : colors.secondaryText} />
                   </TouchableOpacity>
                 ))}
+                {Array.from({ length: 7 }).map((_, i) => (
+                  <View key={`dummy-icon-${i}`} style={{ width: 38, height: 0 }} />
+                ))}
               </View>
             </View>
 
@@ -183,6 +186,9 @@ export default function CategoriesScreen() {
                       background === c && styles.colorDotSelected,
                     ]}
                   />
+                ))}
+                {Array.from({ length: 7 }).map((_, i) => (
+                  <View key={`dummy-color-${i}`} style={{ width: 32, height: 0 }} />
                 ))}
               </View>
             </View>
@@ -253,13 +259,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    gap: 8,
+    gap: 12,
   },
   iconRow: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    gap: 6,
+    gap: 10,
   },
   colorDot: {
     width: 32,

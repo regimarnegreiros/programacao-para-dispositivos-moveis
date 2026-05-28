@@ -108,10 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 3,
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
   },
   label: {
     fontSize: 14,
