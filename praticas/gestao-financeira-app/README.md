@@ -103,9 +103,24 @@ Já deixamos uma Collection de testes pronta no projeto.
    - *Retorna: `{"ok": true, "name": "gestao-financeira-api"}`*
 
 2. **Registro e Login**
-   - **POST** `http://localhost:3000/auth/register` (Cria a conta e retorna o token de acesso).
-   - **POST** `http://localhost:3000/auth/login` (Autentica e retorna o token de acesso).
-   > *Copie o `token` que vier da resposta e cole na aba "Authorization" > "Bearer Token" nas requisições subsequentes.*
+    - **POST** `http://localhost:3000/auth/register` (Cria a conta e retorna o token de acesso).
+      - **Body (JSON):**
+        ```json
+        {
+          "name": "Seu Nome",
+          "email": "seu@email.com",
+          "password": "sua-senha"
+        }
+        ```
+    - **POST** `http://localhost:3000/auth/login` (Autentica e retorna o token de acesso).
+      - **Body (JSON):**
+        ```json
+        {
+          "email": "seu@email.com",
+          "password": "sua-senha"
+        }
+        ```
+    > *Copie o `token` que vier da resposta e cole na aba "Authorization" > "Bearer Token" nas requisições subsequentes.*
 
 3. **Listar Categorias**
    - **GET** `http://localhost:3000/categories`
@@ -125,21 +140,39 @@ Já deixamos uma Collection de testes pronta no projeto.
      ```
 
 5. **Atualizar e Excluir Categoria**
-   - **PUT** `http://localhost:3000/categories/:id`
-   - **DELETE** `http://localhost:3000/categories/:id`
+    - **PUT** `http://localhost:3000/categories/:id`
+      - **Body (JSON):** *(Pode conter apenas os campos que deseja atualizar)*
+        ```json
+        {
+          "displayName": "Saúde Plus",
+          "icon": "fitness_center"
+        }
+        ```
+    - **DELETE** `http://localhost:3000/categories/:id`
    > *Ao tentar excluir uma categoria padrão, a API retorna Erro 400 avisando que elas não podem ser removidas.*
 
-6. **Criar Transação**
-   - **POST** `http://localhost:3000/transactions`
-   - **Body (JSON):**
-     ```json
-     {
-       "description": "Salário de outubro",
-       "value": 3500.50,
-       "date": "2026-04-29T00:00:00.000Z",
-       "categoryId": "<ID_DA_CATEGORIA>"
-     }
-     ```
+6. **Criar, Atualizar e Excluir Transação**
+    - **POST** `http://localhost:3000/transactions`
+      - **Body (JSON):**
+        ```json
+        {
+          "description": "Salário de outubro",
+          "value": 3500.50,
+          "date": "2026-04-29T00:00:00.000Z",
+          "categoryId": "<ID_DA_CATEGORIA>"
+        }
+        ```
+    - **PUT** `http://localhost:3000/transactions/:id`
+      - **Body (JSON):** *(Semelhante ao de criação)*
+        ```json
+        {
+          "description": "Salário de outubro (Corrigido)",
+          "value": 3800.00,
+          "date": "2026-04-29T00:00:00.000Z",
+          "categoryId": "<ID_DA_CATEGORIA>"
+        }
+        ```
+    - **DELETE** `http://localhost:3000/transactions/:id`
 
 7. **Validação de Erros**
    - Se você enviar a rota POST de transação com um `value` faltando ou um dado corrompido, a validação interna via **Zod** será acionada, retornando Erro HTTP `400 Bad Request` com os devidos *details* indicando qual campo falhou.
