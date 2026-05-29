@@ -50,7 +50,6 @@ O projeto atende a todos os requisitos e customizações propostos, garantindo i
    - Certifique-se de que a `DATABASE_URL` aponta para o seu banco de dados MySQL local. Exemplo:
      ```env
      DATABASE_URL="mysql://root:@localhost:3306/gestao_financeira"
-     JWT_SECRET="sua-chave-super-secreta"
      ```
 4. Crie o banco de dados, aplique o Schema e popule as categorias padrões:
    ```bash
